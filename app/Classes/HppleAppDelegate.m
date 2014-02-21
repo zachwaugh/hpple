@@ -7,22 +7,16 @@
 //
 
 #import "HppleAppDelegate.h"
+#import "TFHpple.h"
 
 @implementation HppleAppDelegate
 
-@synthesize window;
-
-
 - (void)applicationDidFinishLaunching:(UIApplication *)application
 {
-
   // Override point for customization after application launch
-  [window makeKeyAndVisible];
+  [self.window makeKeyAndVisible];
 
   // TODO: Make a demo app that shows how it works.
 }
-
-
-
 
 @end

@@ -39,7 +39,6 @@
 
 @end
 
-
 @implementation TFHpple
 
 @synthesize data;
@@ -130,7 +129,7 @@
 // Returns first element at xPath
 - (TFHppleElement *) peekAtSearchWithXPathQuery:(NSString *)xPathOrCSS
 {
-  NSArray * elements = [self searchWithXPathQuery:xPathOrCSS];
+  NSArray *elements = [self searchWithXPathQuery:xPathOrCSS];
   if ([elements count] >= 1) {
     return [elements objectAtIndex:0];
   }

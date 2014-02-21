@@ -9,9 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface HppleAppDelegate : NSObject <UIApplicationDelegate> 
-{
-  UIWindow *window;
-}
 
 @property (nonatomic, strong) IBOutlet UIWindow *window;
 
