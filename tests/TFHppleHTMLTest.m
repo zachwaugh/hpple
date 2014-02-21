@@ -32,8 +32,19 @@
 
 - (void)testInitializesWithHTMLData
 {
-  XCTAssertNotNil(self.doc.data);
-  XCTAssertEqualObjects([self.doc.class description], @"TFHpple");
+	XCTAssertNotNil(self.doc.data);
+	XCTAssertEqualObjects([self.doc.class description], @"TFHpple");
+}
+
+- (void)testFindsTitle
+{
+	NSArray *elements = [self.doc searchWithXPathQuery:@"/html/head/title"];
+	XCTAssertNotNil(elements);
+	XCTAssertTrue(elements.count == 1);
+	
+	TFHppleElement *element = elements[0];
+	XCTAssertEqualObjects(element.tagName, @"title");
+	XCTAssertEqualObjects(element.text, @"Professional Screencast Tutorials | PeepCode Screencasts for Web Developers and Alpha Geeks");
 }
 
 //  doc.search("//p[@class='posted']")
@@ -68,14 +79,14 @@
   TFHppleElement *e = [self.doc peekAtSearchWithXPathQuery:@"//a[@class='sponsor']"];
   
   XCTAssertTrue([e.attributes isKindOfClass:[NSDictionary class]]);
-  XCTAssertEqualObjects([[e attributes] objectForKey:@"href"], @"http://railsmachine.com/");
+  XCTAssertEqualObjects(e.attributes[@"href"], @"http://railsmachine.com/");
 }
 
 - (void)testProvidesEasyAccessToAttributes
 {
   TFHppleElement *e = [self.doc peekAtSearchWithXPathQuery:@"//a[@class='sponsor']"];
   
-  XCTAssertEqualObjects([e objectForKey:@"href"], @"http://railsmachine.com/");
+  XCTAssertEqualObjects(e[@"href"], @"http://railsmachine.com/");
 }
 	
 @end

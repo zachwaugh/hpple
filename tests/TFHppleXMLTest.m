@@ -27,15 +27,36 @@
 
 - (void)tearDown
 {
-    // Put teardown code here; it will be run once, after the last test case.
-    [super tearDown];
-	self.doc = nil;
+    self.doc = nil;
+	[super tearDown];
 }
 
 - (void)testInitializesWithXMLData
 {
 	XCTAssertNotNil(self.doc.data);
-	XCTAssertEqualObjects([self.doc.class description], @"TFHpple");
+	XCTAssertTrue([self.doc isKindOfClass:[TFHpple class]]);
+}
+
+- (void)testFindsTitle
+{
+	NSArray *elements = [self.doc searchWithXPathQuery:@"/rss/channel/title"];
+	XCTAssertNotNil(elements);
+	XCTAssertTrue(elements.count == 1);
+	
+	TFHppleElement *element = elements[0];
+	XCTAssertEqualObjects(element.tagName, @"title");
+	XCTAssertEqualObjects(element.text, @"PeepCode Products");
+}
+
+- (void)testFindsAllTitles
+{
+	NSArray *elements = [self.doc searchWithXPathQuery:@"//title"];
+	XCTAssertNotNil(elements);
+	XCTAssertTrue(elements.count == 16);
+	
+	TFHppleElement *element = elements[0];
+	XCTAssertEqualObjects(element.tagName, @"title");
+	XCTAssertEqualObjects(element.text, @"PeepCode Products");
 }
 
 //  item/title,description,link
@@ -45,7 +66,7 @@
 	XCTAssertTrue(items.count == 15);
 
 	TFHppleElement *e = items[0];
-	XCTAssertEqualObjects([e.class description], @"TFHppleElement");
+	XCTAssertTrue([e isKindOfClass:[TFHppleElement class]]);
 }
 
 - (void)testFindsFirstElementAtXPath
