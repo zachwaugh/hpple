@@ -51,7 +51,7 @@
 @property (nonatomic, strong, readonly) TFHppleElement *firstChild;
 
 // the parent of a node
-@property (nonatomic, unsafe_unretained, readonly) TFHppleElement *parent;
+@property (nonatomic, weak, readonly) TFHppleElement *parent;
 
 - (id)initWithNode:(NSDictionary *)theNode isXML:(BOOL)isDataXML withEncoding:(NSString *)theEncoding;
 + (TFHppleElement *)hppleElementWithNode:(NSDictionary *) theNode isXML:(BOOL)isDataXML withEncoding:(NSString *)theEncoding;

@@ -40,34 +40,29 @@ static NSString * const TFHppleNodeAttributeNameKey     = @"attributeName";
 static NSString * const TFHppleTextNodeName            = @"text";
 
 @interface TFHppleElement ()
-{    
-    NSDictionary * node;
-    BOOL isXML;
-    NSString *encoding;
-    __unsafe_unretained TFHppleElement *parent;
-}
 
-@property (nonatomic, unsafe_unretained, readwrite) TFHppleElement *parent;
+@property (nonatomic, strong) NSDictionary *node;
+@property (nonatomic, copy) NSString *encoding;
+@property (nonatomic, assign) BOOL isXML;
+@property (nonatomic, weak, readwrite) TFHppleElement *parent;
 
 @end
 
 @implementation TFHppleElement
-@synthesize parent;
 
-
-- (id) initWithNode:(NSDictionary *) theNode isXML:(BOOL)isDataXML withEncoding:(NSString *)theEncoding
+- (id)initWithNode:(NSDictionary *)theNode isXML:(BOOL)isDataXML withEncoding:(NSString *)theEncoding
 {
-  if (!(self = [super init]))
-    return nil;
+	self = [super init];
+	if (!self) return nil;
 
-    isXML = isDataXML;
-    node = theNode;
-    encoding = theEncoding;
+    _isXML = isDataXML;
+    _node = theNode;
+    _encoding = theEncoding;
 
-  return self;
+	return self;
 }
 
-+ (TFHppleElement *) hppleElementWithNode:(NSDictionary *) theNode isXML:(BOOL)isDataXML withEncoding:(NSString *)theEncoding
++ (TFHppleElement *)hppleElementWithNode:(NSDictionary *)theNode isXML:(BOOL)isDataXML withEncoding:(NSString *)theEncoding
 {
   return [[[self class] alloc] initWithNode:theNode isXML:isDataXML withEncoding:theEncoding];
 }
@@ -76,161 +71,165 @@ static NSString * const TFHppleTextNodeName            = @"text";
 
 - (NSString *)raw
 {
-    return [node objectForKey:@"raw"];
+    return self.node[@"raw"];
 }
 
-- (NSString *) content
+- (NSString *)content
 {
-  return [node objectForKey:TFHppleNodeContentKey];
+	return self.node[TFHppleNodeContentKey];
 }
 
-
-- (NSString *) tagName
+- (NSString *)tagName
 {
-  return [node objectForKey:TFHppleNodeNameKey];
+	return self.node[TFHppleNodeNameKey];
 }
 
-- (NSArray *) children
+- (NSArray *)children
 {
-  NSMutableArray *children = [NSMutableArray array];
-  for (NSDictionary *child in [node objectForKey:TFHppleNodeChildrenKey]) {
-      TFHppleElement *element = [TFHppleElement hppleElementWithNode:child isXML:isXML withEncoding:encoding];
-      element.parent = self;
-      [children addObject:element];
-  }
-  return children;
+	NSMutableArray *children = [NSMutableArray array];
+	for (NSDictionary *child in self.node[TFHppleNodeChildrenKey]) {
+		TFHppleElement *element = [TFHppleElement hppleElementWithNode:child isXML:self.isXML withEncoding:self.encoding];
+		element.parent = self;
+		[children addObject:element];
+	}
+
+	return children;
 }
 
-- (TFHppleElement *) firstChild
+- (TFHppleElement *)firstChild
 {
-  NSArray * children = self.children;
-  if (children.count)
-    return [children objectAtIndex:0];
-  return nil;
+	NSArray *children = self.children;
+	if (children.count > 0) {
+		return children[0];
+	}
+    
+	return nil;
 }
 
-
-- (NSDictionary *) attributes
+- (NSDictionary *)attributes
 {
-  NSMutableDictionary * translatedAttributes = [NSMutableDictionary dictionary];
-  for (NSDictionary * attributeDict in [node objectForKey:TFHppleNodeAttributeArrayKey]) {
+  NSMutableDictionary *translatedAttributes = [NSMutableDictionary dictionary];
+  for (NSDictionary *attributeDict in self.node[TFHppleNodeAttributeArrayKey]) {
       if ([attributeDict objectForKey:TFHppleNodeContentKey] && [attributeDict objectForKey:TFHppleNodeAttributeNameKey]) {
           [translatedAttributes setObject:[attributeDict objectForKey:TFHppleNodeContentKey]
                                    forKey:[attributeDict objectForKey:TFHppleNodeAttributeNameKey]];
       }
   }
+	
   return translatedAttributes;
 }
 
-- (NSString *) objectForKey:(NSString *) theKey
+- (NSString *)objectForKey:(NSString *)theKey
 {
-  return [[self attributes] objectForKey:theKey];
+	return self.attributes[theKey];
 }
 
-- (id) description
+- (id)description
 {
-  return [node description];
+	return [self.node description];
 }
 
 - (BOOL)hasChildren
 {
-    if ([node objectForKey:TFHppleNodeChildrenKey])
-        return YES;
-    else
-        return NO;
+    if (self.node[TFHppleNodeChildrenKey]) {
+		return YES;
+	} else {
+		return NO;
+	}
 }
 
 - (BOOL)isTextNode
 {
     // we must distinguish between real text nodes and standard nodes with tha name "text" (<text>)
     // real text nodes must have content
-    if ([self.tagName isEqualToString:TFHppleTextNodeName] && (self.content))
-        return YES;
-    else
-        return NO;
+    if ([self.tagName isEqualToString:TFHppleTextNodeName] && (self.content)) {
+		return YES;
+	} else {
+		return NO;
+	}
 }
 
-- (NSArray*) childrenWithTagName:(NSString*)tagName
+- (NSArray *)childrenWithTagName:(NSString *)tagName
 {
-    NSMutableArray* matches = [NSMutableArray array];
+    NSMutableArray *matches = [NSMutableArray array];
     
-    for (TFHppleElement* child in self.children)
-    {
-        if ([child.tagName isEqualToString:tagName])
-            [matches addObject:child];
+    for (TFHppleElement *child in self.children) {
+        if ([child.tagName isEqualToString:tagName]) {
+			[matches addObject:child];
+		}
     }
     
     return matches;
 }
 
-- (TFHppleElement *) firstChildWithTagName:(NSString*)tagName
+- (TFHppleElement *)firstChildWithTagName:(NSString *)tagName
 {
-    for (TFHppleElement* child in self.children)
-    {
-        if ([child.tagName isEqualToString:tagName])
-            return child;
+    for (TFHppleElement *child in self.children) {
+        if ([child.tagName isEqualToString:tagName]) {
+			return child;
+		}
     }
     
     return nil;
 }
 
-- (NSArray*) childrenWithClassName:(NSString*)className
+- (NSArray *)childrenWithClassName:(NSString *)className
 {
-    NSMutableArray* matches = [NSMutableArray array];
+    NSMutableArray *matches = [NSMutableArray array];
     
-    for (TFHppleElement* child in self.children)
-    {
-        if ([[child objectForKey:@"class"] isEqualToString:className])
-            [matches addObject:child];
+    for (TFHppleElement *child in self.children) {
+        if ([[child objectForKey:@"class"] isEqualToString:className]) {
+			[matches addObject:child];
+		}
     }
     
     return matches;
 }
 
-- (TFHppleElement *) firstChildWithClassName:(NSString*)className
+- (TFHppleElement *)firstChildWithClassName:(NSString *)className
 {
-    for (TFHppleElement* child in self.children)
-    {
-        if ([[child objectForKey:@"class"] isEqualToString:className])
-            return child;
+    for (TFHppleElement *child in self.children) {
+        if ([[child objectForKey:@"class"] isEqualToString:className]) {
+			return child;
+		}
     }
     
     return nil;
 }
 
-- (TFHppleElement *) firstTextChild
+- (TFHppleElement *)firstTextChild
 {
-    for (TFHppleElement* child in self.children)
-    {
-        if ([child isTextNode])
-            return child;
+    for (TFHppleElement *child in self.children) {
+        if ([child isTextNode]) {
+			return child;
+		}
     }
     
     return [self firstChildWithTagName:TFHppleTextNodeName];
 }
 
-- (NSString *) text
+- (NSString *)text
 {
     return self.firstTextChild.content;
 }
 
 // Returns all elements at xPath.
-- (NSArray *) searchWithXPathQuery:(NSString *)xPathOrCSS
+- (NSArray *)searchWithXPathQuery:(NSString *)xPathOrCSS
 {
-    
     NSData *data = [self.raw dataUsingEncoding:NSUTF8StringEncoding];
 
-    NSArray * detailNodes = nil;
-    if (isXML) {
-        detailNodes = PerformXMLXPathQueryWithEncoding(data, xPathOrCSS, encoding);
+    NSArray *detailNodes = nil;
+    if (self.isXML) {
+        detailNodes = PerformXMLXPathQueryWithEncoding(data, xPathOrCSS, self.encoding);
     } else {
-        detailNodes = PerformHTMLXPathQueryWithEncoding(data, xPathOrCSS, encoding);
+        detailNodes = PerformHTMLXPathQueryWithEncoding(data, xPathOrCSS, self.encoding);
     }
     
-    NSMutableArray * hppleElements = [NSMutableArray array];
+    NSMutableArray *hppleElements = [NSMutableArray array];
     for (id newNode in detailNodes) {
-        [hppleElements addObject:[TFHppleElement hppleElementWithNode:newNode isXML:isXML withEncoding:encoding]];
+        [hppleElements addObject:[TFHppleElement hppleElementWithNode:newNode isXML:self.isXML withEncoding:self.encoding]];
     }
+	
     return hppleElements;
 }
 
