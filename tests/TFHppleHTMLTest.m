@@ -21,7 +21,7 @@
 {
     [super setUp];
 	NSData *data = [NSData dataWithContentsOfFile:[[NSBundle bundleForClass:self.class] pathForResource:@"index" ofType:@"html"]];
-	self.doc = [[TFHpple alloc] initWithHTMLData:data encoding:@"utf-8"];
+	self.doc = [[TFHpple alloc] initWithHTMLData:data];
 }
 
 - (void)tearDown

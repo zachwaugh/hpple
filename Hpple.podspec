@@ -12,5 +12,6 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/zachwaugh/hpple.git", :tag => "0.3.0" }
   s.source_files  = 'lib'
   s.library   = 'xml2.2'
+  s.xcconfig     = { 'HEADER_SEARCH_PATHS' => '"$(SDKROOT)/usr/include/libxml2"' }
   s.requires_arc = true
 end
