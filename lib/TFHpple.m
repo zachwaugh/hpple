@@ -40,65 +40,65 @@
 
 @implementation TFHpple
 
-- (id)initWithData:(NSData *)theData encoding:(NSString *)theEncoding isXML:(BOOL)isDataXML
+- (id)initWithData:(NSData *)data encoding:(NSString *)encoding isXML:(BOOL)isDataXML
 {
 	self = [super init];
 	if (!self) return nil;
 
-	_data = theData;
-	_encoding = theEncoding;
+	_data = data;
+	_encoding = encoding;
 	_isXML = isDataXML;
 
 	return self;
 }
 
-- (id)initWithData:(NSData *)theData isXML:(BOOL)isDataXML
+- (id)initWithData:(NSData *)data isXML:(BOOL)isDataXML
 {
-    return [self initWithData:theData encoding:nil isXML:isDataXML];
+    return [self initWithData:data encoding:nil isXML:isDataXML];
 }
 
-- (id)initWithXMLData:(NSData *)theData encoding:(NSString *)theEncoding
+- (id)initWithXMLData:(NSData *)data encoding:(NSString *)encoding
 {
-	return [self initWithData:theData encoding:theEncoding isXML:YES];
+	return [self initWithData:data encoding:encoding isXML:YES];
 }
 
-- (id)initWithXMLData:(NSData *)theData
+- (id)initWithXMLData:(NSData *)data
 {
-	return [self initWithData:theData encoding:nil isXML:YES];
+	return [self initWithData:data encoding:nil isXML:YES];
 }
 
-- (id)initWithHTMLData:(NSData *)theData encoding:(NSString *)theEncoding
+- (id)initWithHTMLData:(NSData *)data encoding:(NSString *)encoding
 {
-    return [self initWithData:theData encoding:theEncoding isXML:NO];
+    return [self initWithData:data encoding:encoding isXML:NO];
 }
 
-- (id)initWithHTMLData:(NSData *)theData
+- (id)initWithHTMLData:(NSData *)data
 {
-	return [self initWithData:theData encoding:nil isXML:NO];
+	return [self initWithData:data encoding:nil isXML:NO];
 }
 
-+ (TFHpple *) hppleWithData:(NSData *)theData encoding:(NSString *)theEncoding isXML:(BOOL)isDataXML {
-	return [[[self class] alloc] initWithData:theData encoding:theEncoding isXML:isDataXML];
++ (TFHpple *)hppleWithData:(NSData *)data encoding:(NSString *)encoding isXML:(BOOL)isDataXML {
+	return [[[self class] alloc] initWithData:data encoding:encoding isXML:isDataXML];
 }
 
-+ (TFHpple *) hppleWithData:(NSData *)theData isXML:(BOOL)isDataXML {
-	return [[self class] hppleWithData:theData encoding:nil isXML:isDataXML];
++ (TFHpple *)hppleWithData:(NSData *)data isXML:(BOOL)isDataXML {
+	return [[self class] hppleWithData:data encoding:nil isXML:isDataXML];
 }
 
-+ (TFHpple *) hppleWithHTMLData:(NSData *)theData encoding:(NSString *)theEncoding {
-	return [[self class] hppleWithData:theData encoding:theEncoding isXML:NO];
++ (TFHpple *)hppleWithHTMLData:(NSData *)data encoding:(NSString *)encoding {
+	return [[self class] hppleWithData:data encoding:encoding isXML:NO];
 }
 
-+ (TFHpple *) hppleWithHTMLData:(NSData *)theData {
-	return [[self class] hppleWithData:theData encoding:nil isXML:NO];
++ (TFHpple *)hppleWithHTMLData:(NSData *)data {
+	return [[self class] hppleWithData:data encoding:nil isXML:NO];
 }
 
-+ (TFHpple *) hppleWithXMLData:(NSData *)theData encoding:(NSString *)theEncoding {
-	return [[self class] hppleWithData:theData encoding:theEncoding isXML:YES];
++ (TFHpple *)hppleWithXMLData:(NSData *)data encoding:(NSString *)encoding {
+	return [[self class] hppleWithData:data encoding:encoding isXML:YES];
 }
 
-+ (TFHpple *) hppleWithXMLData:(NSData *)theData {
-	return [[self class] hppleWithData:theData encoding:nil isXML:YES];
++ (TFHpple *)hppleWithXMLData:(NSData *)data {
+	return [[self class] hppleWithData:data encoding:nil isXML:YES];
 }
 
 #pragma mark -
